@@ -1,151 +1,114 @@
-# CausalRLBreaker: Security Testing of LLMs via Causal RL
+# CausalRLBreaker
 
-### Causal Reinforcement Learning for Automated Security Testing of Large Language Models
+**Causally Guided Reinforcement Learning for LLM Security Testing**
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![PyPI version](https://badge.fury.io/py/causal-rl-shaping.svg)](https://badge.fury.io/py/causal-rl-shaping)
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](YOUR_HUGGING_FACE_SPACE_URL)
 [![Research Project](https://img.shields.io/badge/Project-Research%20Code-blue)](https://github.com/parisazeynaly/Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning)
 
-Official research implementation accompanying the M.Sc. thesis:
+Research implementation accompanying the M.Sc. thesis **Security Testing of Large Language Models via Causal Reinforcement Learning** at the University of Naples Federico II.
 
-> **Security Testing of Large Language Models via Causal Reinforcement Learning**
-
-University of Naples Federico II (UniNa)
-
----
+> **Research-use notice:** This repository studies automated red-teaming and security evaluation of LLMs in controlled settings. It is intended for defensive and authorized research.
 
 ## Overview
 
-Automated security testing of large language models (LLMs) can be formulated
-as a sequential search problem in which an agent iteratively transforms
-prompts to discover effective adversarial strategies.
+CausalRLBreaker studies whether structural information discovered from red-teaming trajectories can guide reinforcement-learning-based prompt search more effectively and efficiently. The framework combines PPO-based adaptive search with an interpretable six-factor prompt representation, Fast Causal Inference (FCI), a Partial Ancestral Graph (PAG), Structural Causal Model (SCM)-informed intermediate feedback, and causal-graph-guided action selection.
 
-A central challenge is **credit assignment**: black-box feedback from the
-target model provides limited information about which intermediate
-transformations contributed to a successful outcome.
-
-**CausalRLBreaker** investigates whether causal information can be incorporated
-into reinforcement learning to provide more informative state representations,
-reward signals, and action-selection mechanisms for automated LLM security
-testing.
-
-The framework combines:
-
-- **Fast Causal Inference (FCI)** for estimating causal structure from
-  interaction trajectories;
-- **Structural Causal Models (SCMs)** for representing causal relationships;
-- **Potential-Based Reward Shaping (PBRS)** for incorporating causal information
-  into the reward signal; and
-- **$do$-intervention-guided action selection** for prioritizing candidate
-  prompt transformations.
-
----
+The causal components are used as **model-based structural guidance** for search. They should not be interpreted as experimentally identified causal effects of prompt characteristics.
 
 ## Research Question
 
-> **Can causal information improve the effectiveness and efficiency of
-> reinforcement-learning-based black-box security testing of large language
-> models?**
+**Can structural causal information improve the effectiveness and resource efficiency of reinforcement-learning-based black-box security testing of large language models?**
 
-The project investigates this question by integrating causal discovery and
-structural causal reasoning directly into an RL-based red-teaming pipeline.
-
----
-## Key Contributions
-
-### 1. Causal Observation Vector
-
-CausalRLBreaker maps raw prompt mutations and trajectory information into a
-**6-dimensional continuous causal state representation**:
-
-\[
-s_t \in [0,1]^6.
-\]
-
-This representation provides the reinforcement learning agent with structured
-information beyond the raw black-box response signal.
-
----
-
-### 2. Dense Causal Reward Shaping
-
-The framework introduces an online SCM-derived potential function
-
-\[
-\Phi(s_t)
-\]
-
-and incorporates it into **Potential-Based Reward Shaping (PBRS)**.
-
-The objective is to provide denser causal feedback during exploration while
-retaining the underlying reinforcement learning objective.
-
----
----
-
-## 💻 Quick Start
-
-### 1. Installation
-```bash
-git clone [https://github.com/parisazeynaly/CausalRLBreaker.git](https://github.com/parisazeynaly/CausalRLBreaker.git)
-cd CausalRLBreaker
-pip install -r requirements.txt
-### 3. Causal-Guided Action Selection
-
-Candidate prompt transformations are re-ranked using estimated causal
-intervention effects:
-
-\[
-\Delta \Phi(a).
-\]
-
-This mechanism provides causal guidance for exploration and complements the
-underlying PPO policy.
-
----
 ## Method
 
-The high-level CausalRLBreaker pipeline is:
+The experimental pipeline is organized around four stages:
 
-```text
-                 Initial Prompt
-                       |
-                       v
-              Prompt Transformation
-                       |
-                       v
-              Causal State Vector
-                       |
-                       v
-                FCI / Causal Graph
-                       |
-                       v
-                 Structural Causal
-                      Model
-                       |
-              +--------+--------+
-              |                 |
-              v                 v
-       Causal Potential   Intervention Effects
-              |                 |
-              +--------+--------+
-                       |
-                       v
-                  PPO Policy
-                       |
-                       v
-              Candidate Action
-                       |
-                       v
-                  Target LLM
-                       |
-                       v
-              Security Evaluation
-                       |
-                       v
-                    Reward
-                       |
-                       v
-                  Next State
-              
+1. **Adaptive prompt search.** PPO selects prompt-transformation actions in a black-box red-teaming environment.
+2. **Interpretable factor representation.** Interaction trajectories are transformed into six prompt-level factors through a COAT-based factor-discovery procedure and FCI structural discovery.
+3. **SCM-informed guidance.** The learned structural representation supplies intermediate feedback and model-based intervention scores for candidate transformations.
+4. **Security evaluation.** Generated prompts are evaluated against the target LLM using an automated judge and attack-success metrics.
+
+### Six-factor representation
+
+The state representation contains:
+
+- instructional style
+- responsibility externalization
+- obfuscation techniques
+- hypothetical framing
+- imperative tone
+- malicious intent
+
+At runtime, these dimensions are estimated with a lightweight deterministic lexical factor extractor and mapped to bounded activations in `[0,1]`.
+
+### Causal-graph-guided action selection
+
+For candidate mutation actions, the framework evaluates SCM-internal simulated interventions on the factors associated with each action. The resulting scores guide action selection while retaining stochastic use of the PPO proposal. This mechanism operates at the environment/action-selection level; it does **not** mask PPO logits.
+
+## Key Results
+
+Under the reported experimental configuration, CausalRLBreaker achieved:
+
+| Metric | Result |
+|---|---:|
+| CausalRLBreaker ASR | **61.54% ± 1.67%** |
+| Archived RLBreaker ASR | 19.33% ± 3.21% |
+| DAN baseline ASR | 18.27% ± 2.88% |
+| API-call reduction vs. RLBreaker | **41.82%** |
+| Token reduction vs. RLBreaker | **61.44%** |
+| Training-time reduction vs. RLBreaker | **64.93%** |
+
+**Important comparison note.** The archived RLBreaker evaluation and the primary CausalRLBreaker evaluation are not fully prompt-aligned. Their headline ASR comparison is therefore reported descriptively rather than as a paired statistical comparison.
+
+A separate representation-level ablation evaluates the predictive contribution of the six-factor representation across repeated cross-validation partitions. These ablations measure **predictive information**, not independently identified causal effects.
+
+## Repository Contents
+
+The repository currently contains the thesis implementation, RLBreaker baseline material, causal-RL experiments, empirical evaluation artifacts, data, documentation, environment configuration, and citation metadata. The codebase is being consolidated into a cleaner reproducibility-oriented layout; some historical experiment directories are retained to preserve the research record.
+
+Key top-level resources include:
+
+- `RLBreaker.ipynb` — RLBreaker baseline notebook
+- `Causal RLbreaker/` — causal-guided experimental implementation and artifacts
+- `causal_rl_shaping/` — causal reward-shaping components
+- `empirical_evaluation/` — empirical evaluation material
+- `data/` — project data resources
+- `docs/` — supplementary documentation
+- `.env.example` — environment-variable template
+- `CITATION.cff` — citation metadata
+
+## Installation
+
+Clone the repository and install the project dependencies:
+
+```bash
+git clone https://github.com/parisazeynaly/Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning.git
+cd Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning
+pip install -r requirements.txt
+```
+
+Copy the environment template and provide your own authorized API credentials where required:
+
+```bash
+cp .env.example .env
+```
+
+Never commit API keys or other credentials to the repository.
+
+## Reproducibility
+
+The experiments involve stochastic RL optimization and external LLM API calls. Exact reproduction therefore depends on model availability, API configuration, random seeds, and provider-side model behavior. The repository preserves experimental code and configuration artifacts so that the reported pipeline can be inspected and reproduced as closely as the external dependencies permit.
+
+The primary experiments use a fixed AdvBench train/test split with `random_state=42`. Evaluation results should be interpreted under the exact model and prompt configuration documented by the corresponding experiment.
+
+## Citation
+
+If you use this repository in academic work, please cite the accompanying manuscript/thesis. Machine-readable citation metadata is available in [`CITATION.cff`](CITATION.cff). The manuscript/preprint link will be added once the public version is available.
+
+## Responsible Use
+
+This project concerns adversarial prompting and LLM security testing. Use the code only for authorized research, controlled evaluation, and defensive security analysis. Do not use it to facilitate harmful activity or unauthorized attacks on deployed systems.
+
+## License
+
+This repository is released under the [Apache License 2.0](LICENSE).
