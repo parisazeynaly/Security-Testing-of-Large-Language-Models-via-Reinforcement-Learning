@@ -1,18 +1,10 @@
-"""
-Groq API client wrapper + role-based token/call counters.
+"""Groq API client wrapper and role-based token/call counters.
 
-Extracted from untitled64__2_.py, lines 596-696 — the authentic source for
-the thesis's reported results (uses the real Groq API and Llama-family
-models, confirmed against the checkpoint artifacts and Qwen-transfer
-results referenced later in that file). The earlier causal_rl.py draft used
-a different backend (Cerebras / gpt-oss-120b) that does NOT match the
-manuscript and should not be used as the basis for this module.
-
-IMPORTANT — model roles (confirmed 2026-08 after cross-checking the
-manuscript against this code): the paper's Table 1 had target/judge
-swapped. The correct mapping, matching this code, is:
-    TARGET_MODEL = Llama-4-Scout-17B  (the model being tested)
-    JUDGE_MODEL  = Llama-3.3-70B      (the model scoring success/failure)
+This module preserves the model configuration used by this implementation.
+Keep model-role claims in repository documentation synchronized with the
+experiment configuration used to generate reported results. Historical or
+exploratory model configurations should not be presented as validated
+cross-model transfer evidence.
 """
 
 import os
