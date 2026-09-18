@@ -129,10 +129,15 @@ def apply_causal_mutator(action_name: str, structure: str):
 
 
 class PAGGuidedPolicy:
-    """At inference time, optionally overrides the PPO action with the
-    mutation predicted (via SCM do-interventions) to most increase the
-    causal outcome estimate — this is the "causal action masking" component
-    described in the thesis."""
+    """Causal-graph-guided action-selection policy.
+
+    The policy optionally replaces the PPO-proposed environment action with
+    the mutation whose associated SCM-internal interventions yield the
+    largest mean increase in the model-based outcome estimate. This operates
+    at the environment/action-selection level; it does not modify or mask
+    PPO logits. The intervention scores are structural guidance under the
+    fitted SCM and are not experimentally identified causal effects.
+    """
 
     def __init__(self, mut_keys):
         self.mut_keys = list(mut_keys)
