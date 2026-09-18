@@ -1,15 +1,12 @@
 """
-CausalBreakerSCM: a linear Structural Causal Model used as an adaptive causal
-prior for reward shaping and inference-time guidance.
+CausalBreakerSCM: a linear Structural Causal Model used for SCM-informed
+intermediate feedback and causal-graph-guided action selection.
 
-Extracted from causal_rl.py, lines 309-467.
-
-Thesis wording (keep this honest in any docs/README that reference it):
-this model does NOT prove causality. `update()` re-estimates factor weights
-via OLS on (causal_state, outcome) pairs — an associational computation, not
-a causally identified effect estimate. See the manuscript's discussion of the
-PAG's directional ambiguity for why OLS on the PAG-constrained factor space is
-used as a practical proxy rather than a formally identified causal effect.
+The graph structure encodes the structural assumptions used by the research
+pipeline. Runtime outcome weights are updated from observed factor/outcome
+pairs using OLS. Consequently, predictions and simulated interventions from
+this module are model-based structural guidance under the fitted SCM; they are
+not experimentally identified causal-effect estimates.
 """
 
 import threading
@@ -26,7 +23,7 @@ class CausalBreakerSCM:
         self.n = len(OBS_KEYS)
         self.adj_matrix = np.zeros((self.n, self.n), dtype=np.float32)
 
-        # Prior graph from thesis causal assumptions
+        # Structural graph used by the research pipeline
         self.adj_matrix[IDX["instructional_style"], IDX["responsibility_externalization"]] = 0.35
         self.adj_matrix[IDX["instructional_style"], IDX["obfuscation_techniques"]] = 0.30
         self.adj_matrix[IDX["instructional_style"], IDX["hypothetical_framing"]] = 0.20
@@ -118,8 +115,7 @@ class CausalBreakerSCM:
         return float(np.clip(np.dot(yw, x_hat), 0.0, 1.0))
 
     def update(self, buffer: List[Dict]) -> bool:
-        """Re-estimate y_weights via OLS on (causal_state, outcome) pairs.
-        Associational, not a causally identified effect — see module docstring."""
+        """Re-estimate outcome weights via OLS on observed factor/outcome pairs."""
         if len(buffer) < 100:
             return False
 
@@ -158,7 +154,7 @@ class CausalBreakerSCM:
 
         lines = [
             "=" * 60,
-            "CausalBreakerSCM — Adaptive Causal Prior",
+            "CausalBreakerSCM — Structural Guidance Model",
             "=" * 60,
         ]
         for factor, i in IDX.items():
