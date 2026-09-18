@@ -243,17 +243,22 @@ Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning/
 ├── requirements.txt
 ├── .env.example
 │
-├── RLBreaker.ipynb
-├── Causal RLbreaker/
-├── causal_rl_shaping/
-├── empirical_evaluation/
+├── src/                    # Refactored implementation modules
+│   ├── causal/             # SCM and structural guidance
+│   ├── LLM/                # LLM clients and evaluation
+│   └── mutation.py         # Prompt mutations and guided action selection
+├── RLBreaker.ipynb         # Baseline research notebook
+├── Causal RLbreaker/       # Historical experiment artifacts
+├── causal_rl_shaping/      # Historical shaping experiments
+├── empirical_evaluation/   # Evaluation and analysis artifacts
 ├── data/
 └── docs/
 ```
 
-The repository currently retains several historical experiment directories to
-preserve the research record. The implementation is being progressively
-organized into a cleaner reproducibility-oriented structure.
+The repository retains historical experiment directories to preserve the
+research record. The `src/` tree is the cleaner, modularized implementation
+for code inspection and continued reproducibility work. Historical artifacts
+should not be assumed to represent the final manuscript configuration.
 
 ---
 
@@ -283,6 +288,11 @@ Add your own authorized API credentials to `.env`.
 
 **Never commit API keys or credentials to the repository.**
 
+> **Configuration note:** the current Python implementation defines model-role
+> configuration in `src/LLM/clients.PY`. The `.env.example` file is kept
+> intentionally limited to credentials so that it does not imply runtime
+> configuration that the code does not actually consume.
+
 ---
 
 ## Reproducibility
@@ -299,8 +309,10 @@ Exact numerical reproduction may therefore depend on:
 - external service behavior.
 
 The repository preserves the experimental implementation and configuration
-artifacts needed to inspect and reproduce the reported pipeline as closely as
-the external dependencies permit.
+artifacts needed to inspect the reported pipeline. Some historical files
+contain exploratory configurations; the manuscript should be treated as the
+source of truth for reported experimental settings. Exact reproduction also
+depends on external model/API availability and provider-side model versions.
 
 ---
 
