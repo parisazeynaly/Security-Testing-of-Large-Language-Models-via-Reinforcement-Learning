@@ -1,6 +1,6 @@
-# CausalRLBreaker
+# Security Testing of Large Language Models via Causal Reinforcement Learning
 
-### Causally Guided Reinforcement Learning for LLM Security Testing
+### Empirical Study of Causally Guided Reinforcement Learning for LLM Security Testing
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Research Project](https://img.shields.io/badge/Project-Research%20Code-blue)](https://github.com/parisazeynaly/Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning)
@@ -23,7 +23,7 @@ The study extends RL-based adaptive prompt search with an interpretable six-fact
 
 A Structural Causal Model (SCM) is subsequently used to derive structural guidance for the reinforcement-learning process through intermediate feedback and causal-graph-guided action selection. This design enables an empirical comparison between standard RL-based security testing and causally guided reinforcement learning.
 
-The framework combines:
+The experimental pipeline combines:
 
 - PPO-based adaptive prompt search
 - COAT-based factor discovery and annotation
@@ -51,8 +51,7 @@ identified causal effects.
 
 ### 1. Adaptive Prompt Search
 
-CausalRLBreaker formulates automated red-teaming as a sequential decision
-problem.
+The study formulates automated red-teaming as a sequential decision problem.
 
 A PPO agent selects prompt-transformation actions and receives feedback from
 the target LLM and automated security evaluator.
@@ -314,11 +313,12 @@ depends on external model/API availability and provider-side model versions.
 ## Citation
 
 If you use this repository in academic work, please cite the accompanying
-CausalRLBreaker manuscript.
+research manuscript:
 
-Machine-readable citation metadata is available in:
+**Security Testing of Large Language Models via Causal Reinforcement Learning**
 
-[`CITATION.cff`](CITATION.cff)
+Machine-readable citation metadata is available in
+[`CITATION.cff`](CITATION.cff).
 
 The public preprint link will be added after release.
 
