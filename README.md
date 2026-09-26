@@ -15,18 +15,11 @@ University of Naples Federico II
 
 ## Overview
 
-CausalRLBreaker is a research framework for automated black-box security
-testing of large language models using reinforcement learning and structural
-causal information.
+This research investigates whether structural causal information derived from adversarial interaction trajectories can improve reinforcement-learning-based black-box security testing of large language models.
 
-The framework extends RL-based adaptive prompt search with an interpretable
-six-factor representation derived from red-teaming trajectories. Structural
-relationships among these factors are estimated using Fast Causal Inference
-(FCI) and represented through a Partial Ancestral Graph (PAG).
+The study extends RL-based adaptive prompt search with an interpretable six-factor representation derived from red-teaming trajectories. Structural relationships among these factors are estimated using Fast Causal Inference (FCI) and represented through a Partial Ancestral Graph (PAG).
 
-A Structural Causal Model (SCM) is then used to provide model-based structural
-guidance during reinforcement learning through intermediate feedback and
-causal-graph-guided action selection.
+A Structural Causal Model (SCM) is subsequently used to derive structural guidance for the reinforcement-learning process through intermediate feedback and causal-graph-guided action selection. This design enables an empirical comparison between standard RL-based security testing and causally guided reinforcement learning.
 
 The framework combines:
 
