@@ -4,6 +4,8 @@
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Research Project](https://img.shields.io/badge/Project-Research%20Code-blue)](https://github.com/parisazeynaly/Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning)
+📄 Preprint available on Zenodo  
+**DOI:** 10.5281/zenodo.22983231
 
 Research implementation accompanying the M.Sc. thesis at the
 **University of Naples Federico II**.
