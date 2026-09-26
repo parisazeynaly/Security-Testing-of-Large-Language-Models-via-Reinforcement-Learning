@@ -5,11 +5,13 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Research Project](https://img.shields.io/badge/Project-Research%20Code-blue)](https://github.com/parisazeynaly/Security-Testing-of-Large-Language-Models-via-Reinforcement-Learning)
 
-Research implementation accompanying the M.Sc. thesis:
+Research implementation accompanying the M.Sc. thesis at the
+**University of Naples Federico II**.
 
-> **Security Testing of Large Language Models via Causal Reinforcement Learning**
-
-University of Naples Federico II
+This study investigates whether structural causal information derived from
+adversarial interaction trajectories can improve the effectiveness and
+resource efficiency of reinforcement-learning-based black-box security testing
+of large language models.
 
 ---
 
